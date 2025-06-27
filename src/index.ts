@@ -24,6 +24,7 @@ app.get('/', () => {
   return 'Hello Elysia! Try POSTing to /submit-data with JSON or URL-encoded body.';
 });
 
+
 app.listen(PORT, () => {
   console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
