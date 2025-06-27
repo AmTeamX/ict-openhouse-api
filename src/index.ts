@@ -1,11 +1,19 @@
-import { Elysia } from "elysia";
+// index.ts (Main Elysia Application File)
 
-const app = new Elysia()
+import { Elysia } from 'elysia';
+import { connectDB, disconnectDB } from './db';
 
-app.get("/", () => "Hello Team!!!");
+const app = new Elysia();
 
-app.listen(Bun.env.PORT || 5002);
+app.onStart(async () => {
+  await connectDB();
+})
+app.onStop(async () => {
+  await disconnectDB();
+})
+app.listen(3000, () => {
+  console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  );
+});
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
