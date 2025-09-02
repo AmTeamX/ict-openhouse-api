@@ -1,6 +1,7 @@
 import { cors } from '@elysiajs/cors';
 import { Elysia } from 'elysia';
 import { connectDB, disconnectDB } from './db';
+import { evaluationsRouter } from './routes/evaluations';
 import { statsRouter } from './routes/stats';
 import { usersRouter } from './routes/users';
 
@@ -28,6 +29,7 @@ app.get('/', () => {
 
 app.use(usersRouter);
 app.use(statsRouter);
+app.use(evaluationsRouter);
 
 app.listen(PORT, () => {
   console.log(
