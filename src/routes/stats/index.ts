@@ -20,12 +20,12 @@ export const statsRouter = new Elysia({ prefix: '/stats' })
       const participantsByDate = groupParticipantsByDate(participants)
 
       const totalParticipants = Object.values(participantsByDate).reduce(
-        (acc, arr) => acc + arr.length,
+        (acc: number, arr) => acc + (arr as any[]).length,
         0
       )
 
       const totalParticipantsByDate = Object.fromEntries(
-        Object.entries(participantsByDate).map(([date, list]) => [date, list.length])
+        Object.entries(participantsByDate).map(([date, list]) => [date, (list as any[]).length])
       )
 
       return {

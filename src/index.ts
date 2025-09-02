@@ -1,6 +1,8 @@
 import { cors } from '@elysiajs/cors';
 import { Elysia } from 'elysia';
 import { connectDB, disconnectDB } from './db';
+import { statsRouter } from './routes/stats';
+import { usersRouter } from './routes/users';
 
 const PORT = Bun.env.PORT || 5001;
 const app = new Elysia();
@@ -24,6 +26,8 @@ app.get('/', () => {
   return 'Hello Elysia! Try POSTing to /submit-data with JSON or URL-encoded body.';
 });
 
+app.use(usersRouter);
+app.use(statsRouter);
 
 app.listen(PORT, () => {
   console.log(
