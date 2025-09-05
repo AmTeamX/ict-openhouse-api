@@ -1,8 +1,5 @@
 import { Elysia } from 'elysia';
-import { getQuestStatus } from '~/routes/quests/helpers/getQuestStatus';
-import { getRewardEligibility } from '~/routes/rewards/helpers/getRewardEligibility';
-import { isRewardClaimed } from '~/routes/rewards/helpers/isRewardClaimed';
-import { ParticipantValidator } from '~/types/models/Participant';
+import { ParticipantValidator } from '~/models/Participant.model';
 import { getAuthorizationToken } from '~/utils/headers';
 import { getLineUserFromRequest } from './helpers/getLineUserFromRequest';
 import { getUserRecordFromLineUId } from './helpers/getUserRecordFromLineUId';
@@ -18,17 +15,17 @@ export const usersRouter = new Elysia({ prefix: '/users' })
     },
   }))
 
-  .post('/register', async ({ body, request }) => {
+  .post('/register', async (context) => {
     try {
-      const userRequestData = ParticipantValidator.parse(body)
-      const token = getAuthorizationToken(request)
-      const isRegistered = await isParticipantRegistered(token)
+      const userRequestData = ParticipantValidator.parse(context.body)
+      const token = getAuthorizationToken(context.request)
+      const isRegistered = await isParticipantRegistered(token || "")
 
       if (isRegistered) {
         throw new Error('Participant already registered')
       }
 
-      await registerUser(userRequestData, token)
+      await registerUser(userRequestData, token!)
 
       return {
         success: true,
@@ -40,15 +37,15 @@ export const usersRouter = new Elysia({ prefix: '/users' })
       return {
         success: false,
         payload: {
-          message: error.message,
+          message: error instanceof Error ? error.message : String(error),
         },
       }
     }
   })
 
-  .get('/isRegistered', async ({ request }) => {
+  .get('/isRegistered', async (Context) => {
     try {
-      const user = await getLineUserFromRequest(request)
+      const user = await getLineUserFromRequest(Context)
       const isRegistered = user
         ? await isParticipantRegistered(user?.userId)
         : false
@@ -63,24 +60,23 @@ export const usersRouter = new Elysia({ prefix: '/users' })
       return {
         success: false,
         payload: {
-          message: error.message,
+          message: error instanceof Error ? error.message : String(error),
         },
       }
     }
   })
 
-  .get('/me', async ({ request }) => {
+  .get('/me', async (context) => {
     try {
-      const { userId } = await getLineUserFromRequest(request)
-      const userRecord = await getUserRecordFromLineUId(userId)
+      const user = await getLineUserFromRequest(context)
+      if (!user || !user.userId) {
+        throw new Error('User not found')
+      }
+      const userRecord = await getUserRecordFromLineUId(user.userId)
 
       if (!userRecord) {
         throw new Error('Participant not found')
       }
-
-      const questStatus = await getQuestStatus(userRecord.id)
-      const eligibleForReward = await getRewardEligibility(questStatus)
-      const isClaimed = await isRewardClaimed(userRecord.id)
 
       return {
         success: true,
@@ -88,16 +84,13 @@ export const usersRouter = new Elysia({ prefix: '/users' })
           name: `${userRecord.firstName} ${userRecord.lastName}`,
           language: userRecord.language,
           profileImage: userRecord.linePicture,
-          isRewardEligible: eligibleForReward,
-          isRewardClaimed: isClaimed,
-          quests: questStatus,
         },
       }
     } catch (error) {
       return {
         success: false,
         payload: {
-          message: error.message,
+          message: error instanceof Error ? error.message : String(error),
         },
       }
     }

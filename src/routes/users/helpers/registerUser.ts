@@ -1,11 +1,7 @@
-import { RICH_MENU_ID } from '~/const/line/rich-menu'
-import { LINEClient } from '~/libs/line'
-import Participant from '~/models/participant.model'
-import QuestLog from '~/models/questlog.model'
-import Registration from '~/models/registration.model'
-import { Participant as IParticipant } from '~/types/models/Participant'
+import { Participant as IParticipant } from '~/models/Participant.model'
+import Participant from '~/schemas/Participant.schema'
+import Registration from '~/schemas/Registration.schema'
 import { getLineUserFromIdToken } from './getLineUserFromIdToken'
-import { sendTicketToLine } from './sendTicketToLINE'
 
 const registerUser = async (
   data: IParticipant,
@@ -34,20 +30,14 @@ const registerUser = async (
     // Register record creation
     await Registration.create({ participant: participant._id })
 
-    // Initial quest log
-    await QuestLog.create({
-      participant: participant._id,
-      questNo: 1,
-      status: 'success',
-    })
-
     // LINE integration
     if (participant.lineUserId) {
-      await sendTicketToLine(participant.lineUserId, participant)
-      await LINEClient.linkRichMenuToUser(
-        participant.lineUserId,
-        RICH_MENU_ID.REGISTERED
-      )
+      // await sendTicketToLine(participant.lineUserId, participant)
+      // await LINEClient.linkRichMenuToUser(
+      //   participant.lineUserId,
+      //   RICH_MENU_ID.REGISTERED
+      // )
+      console.log('LINE integration skipped')
     }
 
     return participant

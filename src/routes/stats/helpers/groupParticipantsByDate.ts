@@ -1,31 +1,23 @@
-import { Elysia } from 'elysia'
+import { ParticipantDocument } from '~/schemas/Participant.schema'
 import dayjs from '~/utils/dayjs'
 import { getParticipants } from './getParticipants'
-import { ParticipantDocument } from '~/models/participant.model'
 
-const groupParticipantsByDate = (
+export const groupParticipantsByDate = (
   participants: Awaited<ReturnType<typeof getParticipants>>,
 ) => {
-  return participants.reduce((acc, participant) => {
-    const dateFormatted = dayjs(participant.createdAt).format('YYYY-MM-DD')
+  return participants.reduce(
+    (acc, participant) => {
+      const { createdAt } = participant
 
-    if (!acc[dateFormatted]) {
-      acc[dateFormatted] = []
-    }
+      const dateFormatted = dayjs(createdAt).format('YYYY-MM-DD')
 
-    acc[dateFormatted].push(participant)
-    return acc
-  }, {} as Record<string, Array<ParticipantDocument>>)
+      if (!acc[dateFormatted]) {
+        acc[dateFormatted] = []
+      }
+
+      acc[dateFormatted].push(participant)
+      return acc
+    },
+    {} as Record<string, Array<ParticipantDocument>>,
+  )
 }
-
-const app = new Elysia()
-
-app.get('/participants/grouped-by-date', async () => {
-  const participants = await getParticipants()
-  const grouped = groupParticipantsByDate(participants)
-  return grouped
-})
-
-app.listen(3000)
-
-console.log('🦊 Elysia server running at http://localhost:3000')

@@ -1,8 +1,7 @@
-import Evaluation from '~/models/evaluation.model'
-import QuestLog from '~/models/questlog.model'
-import { Participant } from '~/types/models/Participant'
+import { Participant } from '~/models/Participant.model'
 import { getLineUserFromIdToken } from '~/routes/users/helpers/getLineUserFromIdToken'
 import { getUserRecordFromLineUId } from '~/routes/users/helpers/getUserRecordFromLineUId'
+import Evaluation from '~/schemas/Evaluation.schema'
 
 const submitEvaluation = async (data: Participant, lineToken?: string) => {
   try {
@@ -22,12 +21,6 @@ const submitEvaluation = async (data: Participant, lineToken?: string) => {
     }
 
     const p = await Evaluation.create(payload)
-
-    await QuestLog.create({
-      participant: p.participant,
-      questNo: 6,
-      status: 'success',
-    })
 
     return p
   } catch (error: any) {

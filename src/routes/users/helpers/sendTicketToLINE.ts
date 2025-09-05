@@ -1,8 +1,8 @@
-import { BASE_URL } from '~/const/config'
-import { FLEX_IG_FILTER, FLEX_TICKET_BUBBLE } from '~/const/line/flex-messages'
-import { getLiffUrl } from '~/const/line/liff'
 import { LINEClient } from '~/libs/line'
-import { Participant } from '~/types/models/Participant'
+import { Participant } from '~/models/Participant.model'
+import { BASE_URL } from '~/static/config'
+import { FLEX_IG_FILTER, FLEX_TICKET_BUBBLE } from '~/static/line/flex-messages'
+import { getLiffUrl } from '~/static/line/liff'
 
 export const sendTicketToLine = async (
   lineUid: string,
@@ -20,47 +20,47 @@ export const sendTicketToLine = async (
 
   const carouselContents = [
     {
-      type: 'bubble',
+      type: "bubble" as const,
       hero: {
-        type: 'image',
+        type: "image" as const,
         url: `${BASE_URL}/static/line/images/carousel-agenda.jpg`,
-        size: 'full',
-        aspectRatio: '765:657',
-        aspectMode: 'cover',
+        size: "full" as const,
+        aspectRatio: "765:657",
+        aspectMode: "cover" as const,
         action: {
-          type: 'uri',
-          label: 'Agenda',
-          uri: getLiffUrl('/agenda'),
+          type: "uri" as const,
+          label: "Agenda",
+          uri: getLiffUrl("/agenda"),
         },
       },
     },
     {
-      type: 'bubble',
+      type: "bubble" as const,
       hero: {
-        type: 'image',
+        type: "image" as const,
         url: `${BASE_URL}/static/line/images/carousel-my-passport.jpg`,
-        size: 'full',
-        aspectRatio: '765:657',
-        aspectMode: 'cover',
+        size: "full" as const,
+        aspectRatio: "765:657",
+        aspectMode: "cover" as const,
         action: {
-          type: 'uri',
-          label: 'My Passport',
-          uri: getLiffUrl('/quest'),
+          type: "uri" as const,
+          label: "My Passport",
+          uri: getLiffUrl("/quest"),
         },
       },
     },
     {
-      type: 'bubble',
+      type: "bubble" as const,
       hero: {
-        type: 'image',
+        type: "image" as const,
         url: `${BASE_URL}/static/line/images/carousel-scan.jpg`,
-        size: 'full',
-        aspectRatio: '765:657',
-        aspectMode: 'cover',
+        size: "full" as const,
+        aspectRatio: "765:657",
+        aspectMode: "cover" as const,
         action: {
-          type: 'uri',
-          label: 'Scan',
-          uri: 'https://line.me/R/nv/QRCodeReader',
+          type: "uri" as const,
+          label: "Scan",
+          uri: "https://line.me/R/nv/QRCodeReader",
         },
       },
     },
@@ -88,8 +88,8 @@ export const sendTicketToLine = async (
       type: 'flex',
       altText: altTicketText,
       contents: FLEX_TICKET_BUBBLE(
-        profile.lineDisplayName,
-        profile.linePicture
+        profile.lineDisplayName || "",
+        profile.linePicture || ""
       ),
     },
   ])
