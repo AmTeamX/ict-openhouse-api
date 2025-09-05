@@ -15,10 +15,10 @@ export const usersRouter = new Elysia({ prefix: '/users' })
     },
   }))
 
-  .post('/register', async ({ body, request }) => {
+  .post('/register', async (context) => {
     try {
-      const userRequestData = ParticipantValidator.parse(body)
-      const token = getAuthorizationToken(request)
+      const userRequestData = ParticipantValidator.parse(context.body)
+      const token = getAuthorizationToken(context.request)
       const isRegistered = await isParticipantRegistered(token || "")
 
       if (isRegistered) {

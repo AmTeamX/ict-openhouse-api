@@ -17,10 +17,14 @@ app.onStop(async () => {
   await disconnectDB();
 })
 
-app.onRequest(({ request, set }) => {
-  const start = Date.now();
-  set.headers['X-Request-Start'] = start.toString();
-  console.log(`[${new Date().toISOString()}] Incoming request: ${request.method} ${request.url}`);
+
+app.onAfterHandle(({ request, response }) => {
+  // response.status is available if response is a Response object
+  let status = 200;
+  if (response instanceof Response) {
+    status = response.status;
+  }
+  console.log(`[${new Date().toISOString()}] Response status: ${status} for ${request.method} ${request.url}`);
 });
 
 app.get('/', () => {

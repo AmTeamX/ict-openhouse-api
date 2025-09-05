@@ -1,10 +1,7 @@
-import { LINEClient } from '~/libs/line'
 import { Participant as IParticipant } from '~/models/Participant.model'
 import Participant from '~/schemas/Participant.schema'
 import Registration from '~/schemas/Registration.schema'
-import { RICH_MENU_ID } from '~/static/line/rich-menu'
 import { getLineUserFromIdToken } from './getLineUserFromIdToken'
-import { sendTicketToLine } from './sendTicketToLINE'
 
 const registerUser = async (
   data: IParticipant,
@@ -35,11 +32,12 @@ const registerUser = async (
 
     // LINE integration
     if (participant.lineUserId) {
-      await sendTicketToLine(participant.lineUserId, participant)
-      await LINEClient.linkRichMenuToUser(
-        participant.lineUserId,
-        RICH_MENU_ID.REGISTERED
-      )
+      // await sendTicketToLine(participant.lineUserId, participant)
+      // await LINEClient.linkRichMenuToUser(
+      //   participant.lineUserId,
+      //   RICH_MENU_ID.REGISTERED
+      // )
+      console.log('LINE integration skipped')
     }
 
     return participant

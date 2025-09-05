@@ -50,6 +50,7 @@ export const getLineUserFromIdToken = async (
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.error('Error verifying LINE Id token:', error.response?.data)
       throw new Error(error.response?.data.error_description ?? 'Unknown error')
     }
     throw new Error('Invalid LINE Id token')
